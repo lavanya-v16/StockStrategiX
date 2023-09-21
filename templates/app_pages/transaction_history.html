@@ -1,0 +1,109 @@
+{% extends 'app_pages/base.html' %}
+
+
+{% block content %}
+
+<body>
+
+
+    <h2 class="text-xl font-semibold mx-1">Transaction details: </h2>
+    <br>
+    <form method="post" >
+        <input type="text" name="search" id="search" placeholder="Search stock name" class="mx-1 px-2 border border-black rounded font-bold"/>
+        <input type="submit" name="goback" id="back-button" value="Go back" class="mx-1 bg-blue-900 text-white font-semibold px-4 py-1 rounded cursor-pointer">
+    </form>
+    <br>
+    <br>
+
+
+
+    <nav aria-label="Page navigation">
+        <ul class="inline-flex">
+          <li><button class="h-10 px-5 text-indigo-600 transition-colors duration-150 rounded-l-lg focus:shadow-outline hover:bg-indigo-100">
+            <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" fill-rule="evenodd"></path></svg></button>
+          </li>
+          <li><button class="h-10 px-5 text-indigo-600 transition-colors duration-150 focus:shadow-outline hover:bg-indigo-100">1</button></li>
+          <li><button class="h-10 px-5 text-indigo-600 transition-colors duration-150 focus:shadow-outline hover:bg-indigo-100">2</button></li>
+          <li><button class="h-10 px-5 text-white text-xl transition-colors duration-150 bg-blue-900 border border-r-0 border-indigo-600 focus:shadow-outline">3</button></li>
+          <li><button class="h-10 px-5 text-indigo-600 transition-colors duration-150 bg-white rounded-r-lg focus:shadow-outline hover:bg-indigo-100">
+            <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" fill-rule="evenodd"></path></svg></button>
+          </li>
+        </ul>
+      </nav>
+
+
+
+      
+    <div class="mx-4">
+        <table id="stable" style="width: 100%;" class="table-fixed border-collapse border-4 border-blue-900 " >
+            <tr class="hover:bg-gray-200 text-xl">
+                <th class="border border-black px-4 py-2">Index</th>
+                <th class="border border-black px-4 py-2"> Username</th>
+                <th class="border border-black px-4 py-2"> Stock Name
+                    <select class="table-filter">
+                        <option value="all"></option>
+                    </select>
+                </th>
+                <th class="border border-black px-4 py-2">Quantity</th>
+                <th class="border border-black px-4 py-2">Transaction Date
+                    <select class="table-filter">
+                        <option value="all"></option>
+                    </select>
+                </th>
+                <th class="border border-black px-4 py-2">Transaction price</th>
+                <th class="border border-black px-4 py-2">Total investement</th>
+            </tr>
+
+            <tbody>
+            {% for row in rows %}
+                <tr class="hover:bg-blue-800 hover:text-white font-medium">
+                    <th class="border border-black px-4 py-2">{{loop.index}}</th>
+                    <th class="border border-black px-4 py-2">{{row[0]}}</th>
+                    <th class="border border-black px-4 py-2">{{row[1]}}</th>
+                    <th class="border border-black px-4 py-2">{{row[2]}}</th>
+                    <th class="border border-black px-4 py-2">{{row[3]}}</th>
+                    <th class="border border-black px-4 py-2">{{row[4]}}</th>
+                    <th class="border border-black px-4 py-2">{{row[5]}}</th>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <br>
+    <form method="post" id="logoutform">
+        <input type="submit" name="logout" value="Logout" class="mx-1 bg-blue-900 text-white font-semibold px-4 py-1 rounded cursor-pointer">
+    </form>
+
+
+
+    <script>
+        const searchInput= document.getElementById("search")
+        const rows1= document.querySelectorAll("#stable tbody tr")
+
+    searchInput.addEventListener('keyup', function(event){
+        // console.log(event);
+        const q=event.target.value.toLowerCase();
+        rows1.forEach((row2)=>{
+            console.log(row2.querySelector('th:nth-child(3)'))
+            row2.querySelector('th:nth-child(3)').textContent.toLowerCase().startsWith(q) ? (row2.style.display="table-row") : 
+            (row2.style.display='none')
+        });
+    });
+    </script>
+<script>
+    if ( window.history.replaceState ) {
+        window.history.replaceState( null, null, window.location.href );
+    }
+</script>
+
+
+</body>
+
+{% endblock %}
+
+
+
+
+
+
+

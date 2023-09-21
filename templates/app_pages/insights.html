@@ -1,0 +1,221 @@
+{% extends 'app_pages/base.html' %}
+
+{% block content %}
+
+{% if highest and lowest %}
+<div class="flex flex-col h-screen">
+    <div class="flex-1 flex mx-2 mb-2 mt-2">
+        <div class="w-1/2 mx-2 flex-1 flex items-center justify-center border border-gray-900 rounded-lg">
+           
+                <div class="flex flex-col h-full w-full border-4  ">
+                    <div class="flex-1 flex ">
+                        <div class="w-1/2 bg-blue-400 items-center justify-center border-r-4 border-white-600  ">
+                            <div class="mx-2  items-center justify-center  ">
+                                    <h1 class="text-xl font-semibold">Higgest Realized Profit</h1>
+                                    <br>
+                                    <h3 class="text-3xl">{{highest[1]}}</h3>
+                                    <h3 class="text-xl">INR {{"%.2f"|format(highest[0])}}</h3>
+                            </div>
+                        </div>
+                        <div class="w-1/2 bg-blue-600 flex items-center justify-center border-b-4 border-white-600">
+                            <div class="mx-2  items-center justify-center  ">
+                                <h1 class="text-xl font-semibold">Unrealized Profit/Loss</h1>
+                                <br>
+                                <h3 class="text-xl">INR {{"%.2f"|format(unrealized)}}</h3>
+                                <h3>{{"%.2f"|format(unrealised_percent)}}%</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex-1 flex  ">
+                        <div class="w-1/2 bg-teal-300 flex items-center justify-center border-t-4 border-white-600">
+                            <div class="mx-2  items-center justify-center">
+                                <h1 class="text-xl font-semibold">Higgest Realized Loss</h1>
+                                <br>
+                                <h3 class="text-3xl">{{lowest[1]}}</h3>
+                                <h3 class="text-xl">INR {{"%.2f"|format(lowest[0])}}</h3>
+                            </div>
+                        </div>
+                        <div class="w-1/2 bg-teal-500 flex items-center justify-center border-l-4 border-white-600">
+                            <div class="mx-2  items-center justify-center">
+                                <h1 class="text-xl font-semibold">Realized Profit/Loss</h1>
+                                <br>
+                                <h3 class="text-xl">INR {{"%.2f"|format(realised_profit)}}</h3>
+                            </div>
+                        </div>
+                    </div>      
+
+                </div>
+            
+
+                <div class="flex flex-col h-full w-full mt-5 ">
+                    <!-- dougnut -->
+                    <div class="w-full md:w-1/4 lg:w-1/5 mx-2 flex-1 flex">
+                        
+                        <div>  
+                        <h2 class="w-full text-xl font-bold mx-1">Portfolio distribution: </h2>
+                            <div style="width: 250px ">
+                                <canvas id="myChart"></canvas>
+                            </div>
+                            
+                            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                            
+                            <script>
+                            const ctx = document.getElementById('myChart');
+                            var xValues = {{sname | tojson}};
+                            var yValues = {{distribution | tojson}};
+                            var barColors = ["#164e63", "#172554","#06b6d4","#a5f3fc","#0e7490","#22d3ee"];
+                            a=new Chart("myChart", {
+                                type: "doughnut",
+                                data: {
+                                labels: xValues,
+                                datasets: [{
+                                    backgroundColor: barColors,
+                                    data: yValues
+                                }]
+                                },
+                                options: {
+                                title: {
+                                    display: true,
+                                    text: "World Wide Wine Production"
+                                }
+                                }
+                            });
+                            a.clear()
+                            </script>
+                        </div>
+                    </div>
+
+                </div>
+            
+
+        </div>
+
+
+        <div class="w-1/2 mx-2 flex items-center justify-center border border-gray-900 rounded-lg">
+           
+            <!-- Content for Box 2 -->
+            <div class="w-full md:w-1/2 lg:w-1/6 mx-1">
+                <!-- <div class=" mx-2 max-w-3xl bg-white border border-gray-900 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700"> -->
+                  <div>  
+                  <h2 class="w-full text-xl font-bold mx-2">Profit distribution: </h2>
+                    <div style="width: 450px">
+                        <canvas id="myChart1"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <script>
+                var xValues = {{sname | tojson}}
+                var yValues = {{pl | tojson}};
+            
+                var positiveValues = yValues.map(value => value >= 0 ? value : 0);
+                var negativeValues = yValues.map(value => value < 0 ? value : 0);
+            
+                // var ctx = document.getElementById('myChart1').getContext('2d');
+            
+                var myChart = new Chart("myChart1", {
+                    type: "bar",
+                    data: {
+                        labels: xValues,
+                        datasets: [{
+                            label: 'Positive Values',
+                            data: positiveValues,
+                            backgroundColor: 'green',
+                            barPercentage: 3,
+                            categoryPercentage: 0.5
+                        },
+                        {
+                            label: 'Negative Values',
+                            data: negativeValues,
+                            backgroundColor: 'red',
+                            barPercentage: 3,
+                            categoryPercentage: 0.5
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                // grid:{
+                                //     color:'black',
+                                //     display:true,
+                                // },
+                                beginAtZero: true
+                            },
+                            y: {
+                                grid:{
+                                    color:'black',
+                                    display:true,
+                                },
+                                beginAtZero: true,
+                                max: Math.max(...positiveValues) 
+                            }
+                        },
+                    }
+                });
+            </script>
+
+
+
+
+
+        </div>
+    </div>
+
+    
+    <br>
+    <div class="flex-1 flex mx-2 mb-2 mt-2">
+        <div class="w-1/2 mx-2 flex items-center justify-center border border-gray-900 rounded-lg">
+
+            <!-- Content for Box 3 -->
+        </div>
+        <div class="w-1/2 mx-2 flex items-center justify-center border border-gray-900 rounded-lg">
+            <!-- Content for Box 4 -->
+        </div>
+    </div>
+</div>
+
+{% else %}
+<h1>Not enough data</h1>
+
+{% endif %}
+
+{% endblock %}
+
+
+
+
+<!-- <div class="w-full md:w-1/4 lg:w-1/5 mx-2">
+    
+    <div>  
+      <h2 class="w-full text-xl font-bold mx-1">Portfolio distribution: </h2>
+        <div style="width: 150px ">
+            <canvas id="myChart"></canvas>
+        </div>
+          
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+          
+        <script>
+          const ctx = document.getElementById('myChart');
+          var xValues = {{sname | tojson}};
+          var yValues = {{distribution | tojson}};
+          var barColors = ["#164e63", "#172554","#06b6d4","#a5f3fc","#0e7490","#22d3ee"];
+          a=new Chart("myChart", {
+            type: "doughnut",
+            data: {
+              labels: xValues,
+              datasets: [{
+                backgroundColor: barColors,
+                data: yValues
+              }]
+            },
+            options: {
+              title: {
+                display: true,
+                text: "World Wide Wine Production"
+              }
+            }
+          });
+          a.clear()
+        </script>
+    </div>
+</div> -->
