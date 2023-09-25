@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, Blueprint, request
 import sqlite3
 import yfinance as yf
-from datetime import datetime
+from datetime import date, datetime, timedelta
 from db_manager import DatabaseManager, StockManager,PortfolioManager,ProfitlossManager
 
 transaction_action = Blueprint("transaction_action", __name__)
@@ -20,6 +20,7 @@ def transaction_input(username):
         sell = request.form.get("sell")
         logout = request.form.get("logout")
         insights=request.form.get("insights")
+        refresh=request.form.get("refresh")
         if buy:
             sname = request.form["stock-name"]
             sqty = request.form["stock-quantity"]
@@ -108,6 +109,26 @@ def transaction_input(username):
         if insights:
             print("this is insights")
             return redirect(url_for("insights_route.insights",username=username))
+        if refresh:
+            prow=portfolio_manager.get_portfolio_user(username)
+            print("len(prow)",len(prow))
+            for i in range(len(prow)):
+                print("inside for")
+                # sdate=datetime.now().strftime('%Y-%m-%d') #- datetime.strftime(yesterday, '%Y-%m-%d')
+                # sdate = date.today() - timedelta(1)
+                sqty=prow[i][2]
+                sname=prow[i][1]
+                costprice_port=round( prow[i][2]*prow[i][3],2)
+                ticker_yahoo = yf.Ticker(prow[i][1])
+                data = ticker_yahoo.history()
+                last_quote = round(data['Close'].iloc[-1],2)
+                print(last_quote)
+                vcmp = round(last_quote *sqty, 2)
+                pl = round(vcmp - costprice_port, 2)
+                portfolio_manager.refresh(username,last_quote,vcmp,pl,sname)
+                print("refreshed")
+            return redirect(url_for("transaction_route.transaction_input",username=username))
+        
         return redirect(url_for("transaction_route.transaction_input", username=username))
     except:
         msg = "error in insert"
@@ -136,6 +157,12 @@ def cp_calc(date, qty, name, flag):
         returnvalue =round(float(qty) * stock_name_history.Close[0], 2)
         return returnvalue
     if flag == 1:
+        returnvalue = round(stock_name_history.Close[-1], 2)
+        print("inside flag")
+        return returnvalue
+    if flag==2:
+        end_date = datetime.now().strftime('%Y-%m-%d')
+        stock_name_history = stock_name.history(start=end_date, end=end_date)
         returnvalue = round(stock_name_history.Close[-1], 2)
         return returnvalue
     else:

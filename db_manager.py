@@ -125,6 +125,10 @@ class PortfolioManager:
     def get_profit_total(self,username):
         return self.db.execute("SELECT SUM(PROFIT_LOSS) FROM Portfoliouser where username=?",(username,))
     
+    def refresh(self,username,CMP,VALUE_CMP,PROFIT_LOSS,stockname):
+        self.db.execute("UPDATE Portfoliouser SET CMP=?, VALUE_CMP=?, PROFIT_LOSS=? WHERE STOCKNAME=? AND username=?",
+            ( CMP, VALUE_CMP, PROFIT_LOSS,stockname, username))
+    
 class ProfitlossManager:
     def __init__(self,db_manager):
         self.db=db_manager
@@ -176,8 +180,8 @@ class Insights:
         self.db.execute("INSERT INTO FIFTYTWOWEEK VALUES(?,?,?,?)",(stockname,high,low,cmp))
     def get_fiftytwo(self):
         return self.db.execute_no_arg("SELECT * FROM FIFTYTWOWEEK")
-    def update_fiftytwo(self,high,low,cmp):
-        self.db.execute("UPDATE FIFTYTWOWEEK SET HIGH=?, LOW=?, CMP=?",(high,low,cmp))
+    def update_fiftytwo(self,high,low,cmp,stockname):
+        self.db.execute("UPDATE FIFTYTWOWEEK SET HIGH=?, LOW=?, CMP=? where stockname=?",(high,low,cmp,stockname))
     
     def get_singlerow(self,stockname):
         return self.db.execute("SELECT * FROM FIFTYTWOWEEK WHERE STOCKNAME=?",(stockname,))

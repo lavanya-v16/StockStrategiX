@@ -26,6 +26,8 @@ def insights(username):
         print(total_realised_profit)
 
 
+
+
         l=[]
         k=[]
         m=[]
@@ -44,6 +46,7 @@ def insights(username):
         else:
             return render_template("app_pages/insights.html" )
 
+        
     
     else:
         return render_template("app_pages/insights.html" )

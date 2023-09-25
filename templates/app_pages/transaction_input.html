@@ -9,7 +9,7 @@
                 <form action="#" method="post" id="myForm">
                     <div>
                         <label for="stockname" class="mx-1 block mb-2 text-l font-bold text-black dark:text-white">Stock name</label>
-                        <input type="text" name="stock-name" placeholder="enter stock name" class=" bg-gray-50 border-4 border-black text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required>
+                        <input type="text" name="stock-name" placeholder="Enter stock name" class=" bg-gray-50 border-4 border-black text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required>
                     </div>
                     <div>
                         <label for="qty" class="block mb-2 text-l font-bold text-black dark:text-white">Quantity</label>
@@ -38,6 +38,7 @@
                 </form>
                 <div class="ml-auto flex">
                     <form method="post">
+                        <input type="submit" name="refresh" value="Refresh " class=" bg-blue-900 text-white font-semibold px-4 py-1 rounded cursor-pointer ml-auto mx-2">
                         <input type="submit" name="insights" value="Insights" class=" bg-blue-900 text-white font-semibold px-4 py-1 rounded cursor-pointer ml-auto mx-2">
                         <input type="submit" name="thistory" value="See Transaction history" class=" mx-1 bg-blue-900 text-white font-semibold px-4 py-1 rounded cursor-pointer">
                     </form>
@@ -93,7 +94,11 @@
                             <td class="border border-black px-4 py-2">{{ '{:,}'.format(row[6]) }}</td>
                             <td class="border border-black px-4 py-2">{{ row[7] }}</td>
                             {% if row[7] %}
-                                <td class="border border-black px-4 py-2">{{ "%.2f"|format((row[7]/total_investment)*100) }} %</td>
+                                {% if row[7]>0 %}
+                                    <td class="border border-black bg-green-400 px-4 py-2">{{ "%.2f"|format((row[7]/total_investment)*100) }} %</td>
+                                {% else %}
+                                <td class="border border-black bg-red-400 px-4 py-2">{{ "%.2f"|format((row[7]/total_investment)*100) }} %</td>
+                                {% endif %}
                             {% endif %}
                         </tr>
                         {% endfor %}
